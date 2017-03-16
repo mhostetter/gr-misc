@@ -22,5 +22,6 @@
 ########################################################################
 install(FILES
     api.h
-    complex_to_complex_mth_power.h DESTINATION include/misc
+    complex_to_complex_mth_power.h
+    m_ary_slicer.h DESTINATION include/misc
 )

@@ -18,5 +18,6 @@
 # Boston, MA 02110-1301, USA.
 
 install(FILES
-    misc_complex_to_complex_mth_power.xml DESTINATION share/gnuradio/grc/blocks
+    misc_complex_to_complex_mth_power.xml
+    misc_m_ary_slicer.xml DESTINATION share/gnuradio/grc/blocks
 )
