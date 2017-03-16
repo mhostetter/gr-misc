@@ -16,7 +16,8 @@
     <value>2</value>
     <type>int</type>
   </param>
-
+  <check>$power &gt; 1</check>
+  
   <!-- Make one 'sink' node per input. Sub-nodes:
        * name (an identifier for the GUI)
        * type
