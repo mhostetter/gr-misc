@@ -26,6 +26,7 @@ include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
 list(APPEND misc_sources
+    complex_to_complex_mth_power_impl.cc
 )
 
 set(misc_sources "${misc_sources}" PARENT_SCOPE)

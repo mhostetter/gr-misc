@@ -22,5 +22,5 @@
 ########################################################################
 install(FILES
     api.h
-    DESTINATION include/misc
+    complex_to_complex_mth_power.h DESTINATION include/misc
 )
