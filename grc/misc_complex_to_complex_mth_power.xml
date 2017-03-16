@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <block>
-  <name>complex_to_complex_mth_power</name>
+  <name>Complex to Complex^M</name>
   <key>misc_complex_to_complex_mth_power</key>
-  <category>[misc]</category>
+  <category>[Misc]</category>
   <import>import misc</import>
   <make>misc.complex_to_complex_mth_power($power)</make>
   <!-- Make one 'param' node for every Parameter you want settable from the GUI.
@@ -11,9 +11,10 @@
        * key (makes the value accessible as $keyname, e.g. in the make node)
        * type -->
   <param>
-    <name>...</name>
-    <key>...</key>
-    <type>...</type>
+    <name>Power</name>
+    <key>power</key>
+    <value>2</value>
+    <type>int</type>
   </param>
 
   <!-- Make one 'sink' node per input. Sub-nodes:
@@ -23,7 +24,7 @@
        * optional (set to 1 for optional inputs) -->
   <sink>
     <name>in</name>
-    <type><!-- e.g. int, float, complex, byte, short, xxx_vector, ...--></type>
+    <type>complex</type>
   </sink>
 
   <!-- Make one 'source' node per output. Sub-nodes:
@@ -33,6 +34,6 @@
        * optional (set to 1 for optional inputs) -->
   <source>
     <name>out</name>
-    <type><!-- e.g. int, float, complex, byte, short, xxx_vector, ...--></type>
+    <type>complex</type>
   </source>
 </block>

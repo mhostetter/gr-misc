@@ -24,6 +24,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "complex_to_complex_mth_power_impl.h"
+#include <volk/volk.h>
 
 namespace gr {
   namespace misc {
@@ -40,9 +41,15 @@ namespace gr {
      */
     complex_to_complex_mth_power_impl::complex_to_complex_mth_power_impl(int power)
       : gr::sync_block("complex_to_complex_mth_power",
-              gr::io_signature::make(<+MIN_IN+>, <+MAX_IN+>, sizeof(<+ITYPE+>)),
-              gr::io_signature::make(<+MIN_OUT+>, <+MAX_OUT+>, sizeof(<+OTYPE+>)))
-    {}
+              gr::io_signature::make(1, 1, sizeof(gr_complex)),
+              gr::io_signature::make(1, 1, sizeof(gr_complex)))
+    {
+      d_power = power;
+
+      d_alignment = volk_get_alignment();
+      const int alignment_multiple = d_alignment/sizeof(gr_complex);
+      set_alignment(std::max(1, alignment_multiple));
+    }
 
     /*
      * Our virtual destructor.
@@ -56,10 +63,13 @@ namespace gr {
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
-      const <+ITYPE+> *in = (const <+ITYPE+> *) input_items[0];
-      <+OTYPE+> *out = (<+OTYPE+> *) output_items[0];
+      const gr_complex *in = (const gr_complex *) input_items[0];
+      gr_complex *out = (gr_complex *) output_items[0];
 
-      // Do <+signal processing+>
+      volk_32fc_x2_multiply_32fc(&out[0], &in[0], &in[0], noutput_items);
+      for(int i=1; i<d_power-1; i++) {
+        volk_32fc_x2_multiply_32fc(&out[0], &out[0], &in[0], noutput_items);
+      }
 
       // Tell runtime system how many output items we produced.
       return noutput_items;

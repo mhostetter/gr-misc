@@ -29,7 +29,8 @@ namespace gr {
     class complex_to_complex_mth_power_impl : public complex_to_complex_mth_power
     {
      private:
-      // Nothing to declare in this block.
+      int d_power;
+      unsigned int d_alignment;
 
      public:
       complex_to_complex_mth_power_impl(int power);
