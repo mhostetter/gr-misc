@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2017 Matt Hostetter.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,12 +42,10 @@ namespace gr {
     complex_to_complex_mth_power_impl::complex_to_complex_mth_power_impl(int power)
       : gr::sync_block("complex_to_complex_mth_power",
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
-              gr::io_signature::make(1, 1, sizeof(gr_complex)))
+              gr::io_signature::make(1, 1, sizeof(gr_complex))),
+        d_power(power)
     {
-      d_power = power;
-
-      d_alignment = volk_get_alignment();
-      const int alignment_multiple = d_alignment/sizeof(gr_complex);
+      const int alignment_multiple = volk_get_alignment()/sizeof(gr_complex);
       set_alignment(std::max(1, alignment_multiple));
     }
 
@@ -58,16 +56,24 @@ namespace gr {
     {
     }
 
+    void
+    complex_to_complex_mth_power_impl::set_power(int power) {
+      gr::thread::scoped_lock l(d_setlock);
+      d_power = power;
+    }
+
     int
     complex_to_complex_mth_power_impl::work(int noutput_items,
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
+      gr::thread::scoped_lock l(d_setlock);
+
       const gr_complex *in = (const gr_complex *) input_items[0];
       gr_complex *out = (gr_complex *) output_items[0];
 
       volk_32fc_x2_multiply_32fc(&out[0], &in[0], &in[0], noutput_items);
-      for(int i=1; i<d_power-1; i++) {
+      for(int i=1; i < d_power-1; i++) {
         volk_32fc_x2_multiply_32fc(&out[0], &out[0], &in[0], noutput_items);
       }
 

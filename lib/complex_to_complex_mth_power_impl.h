@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2017 Matt Hostetter.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,11 +30,11 @@ namespace gr {
     {
      private:
       int d_power;
-      unsigned int d_alignment;
 
      public:
       complex_to_complex_mth_power_impl(int power);
       ~complex_to_complex_mth_power_impl();
+      void set_power(int power);
 
       // Where all the action really happens
       int work(int noutput_items,

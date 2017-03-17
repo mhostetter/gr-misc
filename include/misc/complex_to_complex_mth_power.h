@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2017 Matt Hostetter.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,8 @@ namespace gr {
        * creating new instances.
        */
       static sptr make(int power);
+
+      virtual void set_power(int power) = 0;
     };
 
   } // namespace misc
