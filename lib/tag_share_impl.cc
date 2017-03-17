@@ -29,20 +29,25 @@ namespace gr {
   namespace misc {
 
     tag_share::sptr
-    tag_share::make(size_t sizeof_stream_item)
+    tag_share::make(size_t sizeof_stream_item1, size_t sizeof_stream_item2)
     {
       return gnuradio::get_initial_sptr
-        (new tag_share_impl(sizeof_stream_item));
+        (new tag_share_impl(sizeof_stream_item1, sizeof_stream_item2));
     }
 
     /*
      * The private constructor
      */
-    tag_share_impl::tag_share_impl(size_t sizeof_stream_item)
+    tag_share_impl::tag_share_impl(size_t sizeof_stream_item1, size_t sizeof_stream_item2)
       : gr::sync_block("tag_share",
-              gr::io_signature::make(<+MIN_IN+>, <+MAX_IN+>, sizeof(<+ITYPE+>)),
-              gr::io_signature::make(<+MIN_OUT+>, <+MAX_OUT+>, sizeof(<+OTYPE+>)))
-    {}
+              gr::io_signature::make2(2, 2, sizeof_stream_item1, sizeof_stream_item2),
+              gr::io_signature::make(1, 1, sizeof_stream_item1))
+    {
+      d_sizeof_stream_item1 = sizeof_stream_item1;
+      
+      // The entire premise of the block
+      set_tag_propagation_policy(TPP_ALL_TO_ALL);
+    }
 
     /*
      * Our virtual destructor.
@@ -56,10 +61,13 @@ namespace gr {
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
-      const <+ITYPE+> *in = (const <+ITYPE+> *) input_items[0];
-      <+OTYPE+> *out = (<+OTYPE+> *) output_items[0];
+      const void *in = (const void *) input_items[0];
+      void *out = (void *) output_items[0];
 
-      // Do <+signal processing+>
+      // Pass Input 0 to Output 0. The GNU Radio scheduler will 
+      // automatically combine Input 0 and Input 1's tags onto
+      // Output 0's stream
+      memcpy(out, in, d_sizeof_stream_item1*noutput_items);
 
       // Tell runtime system how many output items we produced.
       return noutput_items;

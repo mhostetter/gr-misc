@@ -29,10 +29,10 @@ namespace gr {
     class tag_share_impl : public tag_share
     {
      private:
-      // Nothing to declare in this block.
+      size_t d_sizeof_stream_item1;
 
      public:
-      tag_share_impl(size_t sizeof_stream_item);
+      tag_share_impl(size_t sizeof_stream_item1, size_t sizeof_stream_item2);
       ~tag_share_impl();
 
       // Where all the action really happens

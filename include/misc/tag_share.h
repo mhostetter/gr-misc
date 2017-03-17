@@ -46,7 +46,7 @@ namespace gr {
        * class. misc::tag_share::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t sizeof_stream_item);
+      static sptr make(size_t sizeof_stream_item1, size_t sizeof_stream_item2);
     };
 
   } // namespace misc
