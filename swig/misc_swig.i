@@ -11,6 +11,7 @@
 #include "misc/complex_to_complex_mth_power.h"
 #include "misc/m_ary_slicer.h"
 #include "misc/tag_share.h"
+#include "misc/tag_max.h"
 %}
 
 
@@ -20,3 +21,5 @@ GR_SWIG_BLOCK_MAGIC2(misc, complex_to_complex_mth_power);
 GR_SWIG_BLOCK_MAGIC2(misc, m_ary_slicer);
 %include "misc/tag_share.h"
 GR_SWIG_BLOCK_MAGIC2(misc, tag_share);
+%include "misc/tag_max.h"
+GR_SWIG_BLOCK_MAGIC2(misc, tag_max);

@@ -29,6 +29,7 @@ list(APPEND misc_sources
     complex_to_complex_mth_power_impl.cc
     m_ary_slicer_impl.cc
     tag_share_impl.cc
+    tag_max_impl.cc
 )
 
 set(misc_sources "${misc_sources}" PARENT_SCOPE)
