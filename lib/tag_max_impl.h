@@ -29,11 +29,21 @@ namespace gr {
     class tag_max_impl : public tag_max
     {
      private:
-      // Nothing to declare in this block.
+      float d_thresh;
+      int d_look_ahead;
+      int d_tag_offset;
+      int d_post_tag_blank;
+      std::string d_tag_name;
+      uint64_t d_blank_until;
+      bool d_finding_max;
+      uint64_t d_find_max_until;
+      float d_max;
+      uint64_t d_max_offset;
 
      public:
-      tag_max_impl(float thresh, int look_ahead, int tag_adjust, int post_tag_blank, char* tag_name);
+      tag_max_impl(float thresh, int look_ahead, int tag_offset, int post_tag_blank, const std::string& tag_name);
       ~tag_max_impl();
+      void reset();
 
       // Where all the action really happens
       int work(int noutput_items,

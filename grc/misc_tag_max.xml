@@ -1,38 +1,48 @@
 <?xml version="1.0"?>
 <block>
-  <name>tag_max</name>
+  <name>Tag Max</name>
   <key>misc_tag_max</key>
-  <category>[misc]</category>
+  <category>[Misc]</category>
   <import>import misc</import>
-  <make>misc.tag_max($thresh, $look_ahead, $tag_adjust, $post_tag_blank, $tag_name)</make>
-  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
-       Sub-nodes:
-       * name
-       * key (makes the value accessible as $keyname, e.g. in the make node)
-       * type -->
-  <param>
-    <name>...</name>
-    <key>...</key>
-    <type>...</type>
-  </param>
+  <make>misc.tag_max($thresh, $look_ahead, $tag_offset, $post_tag_blank, $tag_name)</make>
 
-  <!-- Make one 'sink' node per input. Sub-nodes:
-       * name (an identifier for the GUI)
-       * type
-       * vlen
-       * optional (set to 1 for optional inputs) -->
+  <param>
+    <name>Threshold</name>
+    <key>thresh</key>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Look Ahead</name>
+    <key>look_ahead</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Tag Offset</name>
+    <key>tag_offset</key>
+    <value>0</value>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Post-Tag Blank</name>
+    <key>post_tag_blank</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Tag Name</name>
+    <key>tag_name</key>
+    <type>string</type>
+  </param>
+  
+  <check>$look_ahead &gt; 0</check>
+  <check>$post_tag_blank &gt; -1</check>
+
   <sink>
     <name>in</name>
-    <type><!-- e.g. int, float, complex, byte, short, xxx_vector, ...--></type>
+    <type>float</type>
   </sink>
 
-  <!-- Make one 'source' node per output. Sub-nodes:
-       * name (an identifier for the GUI)
-       * type
-       * vlen
-       * optional (set to 1 for optional inputs) -->
   <source>
     <name>out</name>
-    <type><!-- e.g. int, float, complex, byte, short, xxx_vector, ...--></type>
+    <type>float</type>
   </source>
 </block>

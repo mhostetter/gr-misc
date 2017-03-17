@@ -46,7 +46,7 @@ namespace gr {
        * class. misc::tag_max::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float thresh, int look_ahead, int tag_adjust, int post_tag_blank, char* tag_name);
+      static sptr make(float thresh, int look_ahead, int tag_adjust, int post_tag_blank, const std::string& tag_name);
     };
 
   } // namespace misc
