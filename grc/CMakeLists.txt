@@ -19,5 +19,6 @@
 
 install(FILES
     misc_complex_to_complex_mth_power.xml
-    misc_m_ary_slicer.xml DESTINATION share/gnuradio/grc/blocks
+    misc_m_ary_slicer.xml
+    misc_tag_share.xml DESTINATION share/gnuradio/grc/blocks
 )

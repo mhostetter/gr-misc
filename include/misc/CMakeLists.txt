@@ -23,5 +23,6 @@
 install(FILES
     api.h
     complex_to_complex_mth_power.h
-    m_ary_slicer.h DESTINATION include/misc
+    m_ary_slicer.h
+    tag_share.h DESTINATION include/misc
 )
