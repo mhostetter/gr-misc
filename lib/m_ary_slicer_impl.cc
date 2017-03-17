@@ -24,6 +24,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "m_ary_slicer_impl.h"
+#include <volk/volk.h>
 
 namespace gr {
   namespace misc {
@@ -40,9 +41,25 @@ namespace gr {
      */
     m_ary_slicer_impl::m_ary_slicer_impl(int M, std::vector<uint8_t> slice_map, float center, float deviation)
       : gr::sync_block("m_ary_slicer",
-              gr::io_signature::make(<+MIN_IN+>, <+MAX_IN+>, sizeof(<+ITYPE+>)),
-              gr::io_signature::make(<+MIN_OUT+>, <+MAX_OUT+>, sizeof(<+OTYPE+>)))
-    {}
+              gr::io_signature::make(1, 1, sizeof(float)),
+              gr::io_signature::make(1, 1, sizeof(uint8_t)))
+    {
+      d_M = M;
+      d_slice_map = slice_map;
+      d_center = center;
+      d_deviation = deviation;
+
+      d_mask = ((uint8_t) M) - 1;
+
+      // TODO: explain shifting and slicing
+      if(d_M == 2) {
+        d_deviation = 0.0f;
+      }
+
+      d_alignment = volk_get_alignment();
+      const int alignment_multiple = d_alignment/sizeof(gr_complex);
+      set_alignment(std::max(1, alignment_multiple));
+    }
 
     /*
      * Our virtual destructor.
@@ -56,10 +73,23 @@ namespace gr {
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
-      const <+ITYPE+> *in = (const <+ITYPE+> *) input_items[0];
-      <+OTYPE+> *out = (<+OTYPE+> *) output_items[0];
+      const float *in = (const float *) input_items[0];
+      uint8_t *out = (uint8_t *) output_items[0];
 
-      // Do <+signal processing+>
+      float temp;
+      for(int i=0; i<noutput_items; i++) {
+        // Adjust to center and shift up to that the lowest section is below 0
+        temp = in[i] - d_center + (d_M/2 - 1)*d_deviation;
+        if(temp < 0) {
+          out[i] = d_slice_map[0] & d_mask;
+        }
+        else if(temp > (d_M-1)*d_deviation) {
+          out[i] = d_slice_map[d_M-1] & d_mask;
+        }
+        else {
+          out[i] = d_slice_map[temp/d_deviation] & d_mask;
+        }
+      }
 
       // Tell runtime system how many output items we produced.
       return noutput_items;

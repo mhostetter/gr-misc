@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <block>
-  <name>m_ary_slicer</name>
+  <name>M-ary Slicer</name>
   <key>misc_m_ary_slicer</key>
-  <category>[misc]</category>
+  <category>[Misc]</category>
   <import>import misc</import>
   <make>misc.m_ary_slicer($M, $slice_map, $center, $deviation)</make>
   <!-- Make one 'param' node for every Parameter you want settable from the GUI.
@@ -11,10 +11,31 @@
        * key (makes the value accessible as $keyname, e.g. in the make node)
        * type -->
   <param>
-    <name>...</name>
-    <key>...</key>
-    <type>...</type>
+    <name>M</name>
+    <key>M</key>
+    <value>2</value>
+    <type>int</type>
   </param>
+  <param>
+    <name>Slice Map</name>
+    <key>slice_map</key>
+    <value>[0,1]</value>
+    <type>int_vector</type>
+  </param>
+  <param>
+    <name>Slice Center</name>
+    <key>center</key>
+    <value>0.0</value>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Slice Deviation</name>
+    <key>deviation</key>
+    <value>1.0</value>
+    <type>float</type>
+    <hide>#if $M() > 2 then 'none' else 'all'</hide>
+  </param>
+  <check>$M &gt; 1</check>
 
   <!-- Make one 'sink' node per input. Sub-nodes:
        * name (an identifier for the GUI)
@@ -23,7 +44,7 @@
        * optional (set to 1 for optional inputs) -->
   <sink>
     <name>in</name>
-    <type><!-- e.g. int, float, complex, byte, short, xxx_vector, ...--></type>
+    <type>float</type>
   </sink>
 
   <!-- Make one 'source' node per output. Sub-nodes:
@@ -33,6 +54,6 @@
        * optional (set to 1 for optional inputs) -->
   <source>
     <name>out</name>
-    <type><!-- e.g. int, float, complex, byte, short, xxx_vector, ...--></type>
+    <type>byte</type>
   </source>
 </block>

@@ -29,7 +29,12 @@ namespace gr {
     class m_ary_slicer_impl : public m_ary_slicer
     {
      private:
-      // Nothing to declare in this block.
+      int d_M;
+      std::vector<uint8_t> d_slice_map;
+      float d_center;
+      float d_deviation;
+      uint8_t d_mask;
+      unsigned int d_alignment;
 
      public:
       m_ary_slicer_impl(int M, std::vector<uint8_t> slice_map, float center, float deviation);
