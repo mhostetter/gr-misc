@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2017 Matt Hostetter.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,11 +41,11 @@ namespace gr {
     tag_share_impl::tag_share_impl(size_t sizeof_stream_item1, size_t sizeof_stream_item2)
       : gr::sync_block("tag_share",
               gr::io_signature::make2(2, 2, sizeof_stream_item1, sizeof_stream_item2),
-              gr::io_signature::make(1, 1, sizeof_stream_item1))
+              gr::io_signature::make(1, 1, sizeof_stream_item1)),
+        d_sizeof_stream_item1(sizeof_stream_item1)
     {
-      d_sizeof_stream_item1 = sizeof_stream_item1;
-      
-      // The entire premise of the block
+      // This is the entire premise of the block -- to have the GNU Radio runtime
+      // propagate all the tags from Input 0 and Input 1 to Output 0.
       set_tag_propagation_policy(TPP_ALL_TO_ALL);
     }
 
@@ -64,9 +64,7 @@ namespace gr {
       const void *in = (const void *) input_items[0];
       void *out = (void *) output_items[0];
 
-      // Pass Input 0 to Output 0. The GNU Radio scheduler will 
-      // automatically combine Input 0 and Input 1's tags onto
-      // Output 0's stream
+      // Input 0 passes through to Output 0
       memcpy(out, in, d_sizeof_stream_item1*noutput_items);
 
       // Tell runtime system how many output items we produced.

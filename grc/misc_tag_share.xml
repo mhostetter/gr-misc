@@ -5,11 +5,7 @@
   <category>[Misc]</category>
   <import>import misc</import>
   <make>misc.tag_share($type1.size, $type2.size)</make>
-  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
-       Sub-nodes:
-       * name
-       * key (makes the value accessible as $keyname, e.g. in the make node)
-       * type -->
+
   <param>
     <name>Input/Output Type</name>
     <key>type1</key>
@@ -71,11 +67,6 @@
     </option>
   </param>
 
-  <!-- Make one 'sink' node per input. Sub-nodes:
-       * name (an identifier for the GUI)
-       * type
-       * vlen
-       * optional (set to 1 for optional inputs) -->
   <sink>
     <name>in</name>
     <type>$type1</type>
@@ -85,13 +76,12 @@
     <type>$type2</type>
   </sink>
 
-  <!-- Make one 'source' node per output. Sub-nodes:
-       * name (an identifier for the GUI)
-       * type
-       * vlen
-       * optional (set to 1 for optional inputs) -->
   <source>
     <name>out</name>
     <type>$type1</type>
   </source>
+
+  <doc>
+The Tag Share block will reproduce the Input 0 stream on Output 0 while adding to it the tags from Input 1. This block is useful for transferring tags from a correlate_access_code_bb output stream to the main complex stream.
+  </doc>
 </block>
