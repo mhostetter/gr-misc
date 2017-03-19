@@ -7,7 +7,7 @@
   <make>misc.tag_share($type1.size, $type2.size)</make>
 
   <param>
-    <name>Input/Output Type</name>
+    <name>IO Type</name>
     <key>type1</key>
     <type>enum</type>
     <option>
