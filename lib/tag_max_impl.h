@@ -43,7 +43,6 @@ namespace gr {
      public:
       tag_max_impl(float thresh, int look_ahead, int tag_offset, int post_tag_blank, const std::string& tag_name);
       ~tag_max_impl();
-      void reset();
 
       // Where all the action really happens
       int work(int noutput_items,
