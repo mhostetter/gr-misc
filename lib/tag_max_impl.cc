@@ -73,7 +73,7 @@ namespace gr {
       for(int i = 0; i < noutput_items; i++) {
         if(d_finding_max == false) {
           // Haven't seen a threshold crossing yet, look for one
-          if(in[i] > d_thresh && (nitems_read(0) + i > d_blank_until || nitems_read(0) + i == 0)) {
+          if(in[i] > d_thresh && nitems_read(0) + i >= d_blank_until) {
             d_finding_max = true;
             d_find_max_until = nitems_read(0) + i + d_look_ahead;
           }
