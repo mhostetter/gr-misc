@@ -24,6 +24,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "tag_max_impl.h"
+#include <volk/volk.h>
 
 namespace gr {
   namespace misc {
@@ -48,10 +49,12 @@ namespace gr {
         d_post_tag_blank(post_tag_blank),
         d_tag_name(tag_name),
         d_blank_until(0),
-        d_max(thresh),
         d_finding_max(false),
         d_find_max_until(0xFFFFFFFFFFFFFFFF)
     {
+      // set_min_noutput_items(-1*d_tag_offset + 2*d_look_ahead);
+      set_min_noutput_items(1000);
+      set_min_output_buffer(1000*sizeof(gr_complex));
       set_tag_propagation_policy(TPP_ALL_TO_ALL);
     }
 
@@ -69,43 +72,73 @@ namespace gr {
     {
       const float *in = (const float *) input_items[0];
       float *out = (float *) output_items[0];
+      uint64_t i;
+      uint16_t max_index;
 
-      for(int i = 0; i < noutput_items; i++) {
-        if(d_finding_max == false) {
-          // Haven't seen a threshold crossing yet, look for one
-          if(in[i] > d_thresh && nitems_read(0) + i >= d_blank_until) {
-            d_finding_max = true;
-            d_find_max_until = nitems_read(0) + i + d_look_ahead;
-          }
-        }
-        else if(nitems_read(0) + i < d_find_max_until) {
-          // Are currently searching for a max, search while valid
-          if(in[i] > d_max) {
-            d_max_offset = nitems_read(0) + i;
-            d_max = in[i];
-          }
-        }
-        else {
-          // Finished searching for max
-          add_item_tag(
-            0,
-            d_max_offset + d_tag_offset,
-            pmt::string_to_symbol(d_tag_name),
-            pmt::from_double((double) d_max),
-            alias_pmt()
-          );
+      printf("\nnoutput_items = %d", noutput_items);
+      // printf("\nlen = %d", noutput_items - d_look_ahead + d_tag_offset);
 
-          // Reset values
-          d_finding_max = false;
-          d_blank_until = d_max_offset + d_tag_offset + d_post_tag_blank;
-          d_max = d_thresh;
-        }
+      for(i = -1*d_tag_offset; i < noutput_items - d_look_ahead; i++) {
+        // out[i] = in[i]; // Input passes to output
+        printf("\nin[%d]", i);
 
-        out[i] = in[i];
+        if(nitems_read(0) + i >= d_blank_until) {
+          // if(!d_finding_max) {
+            // if(i < noutput_items - d_look_ahead) {
+            // Good keep looking
+            // Haven't seen a threshold crossing yet, look for one
+            if(in[i] > d_thresh) {
+              // Find the max
+              volk_32f_index_max_16u(&max_index, &in[i], d_look_ahead);
+              // d_finding_max = true;
+              d_max_offset = nitems_read(0) + i + max_index;
+              d_max = in[i + max_index];
+              i += d_look_ahead; // Advance this loop
+              add_item_tag(
+                0,
+                d_max_offset + d_tag_offset,
+                pmt::string_to_symbol(d_tag_name),
+                pmt::from_double((double) d_max),
+                alias_pmt()
+              );
+              d_blank_until = d_max_offset + d_tag_offset + d_post_tag_blank;
+              // d_find_max_until = nitems_read(0) + i + d_look_ahead;
+            }
+            // }
+            // else {
+            //   break;
+            // }
+          // }
+          // else if(nitems_read(0) + i < d_find_max_until) {
+          //   // Are currently searching for a max, search while valid
+          //   if(in[i] > d_max) {
+          //     d_max_offset = nitems_read(0) + i;
+          //     d_max = in[i];
+          //   }
+          // }
+          // else {
+            // Finished searching for max
+            // add_item_tag(
+            //   0,
+            //   d_max_offset + d_tag_offset,
+            //   pmt::string_to_symbol(d_tag_name),
+            //   pmt::from_double((double) d_max),
+            //   alias_pmt()
+            // );
+
+            // Reset values
+            // d_finding_max = false;
+            // d_blank_until = d_max_offset + d_tag_offset + d_post_tag_blank;
+          // }
+        }
       }
 
+      printf("\nused = %d", i + d_tag_offset);
+
+      memcpy(out, in, sizeof(gr_complex)*(i + d_tag_offset));
+
       // Tell runtime system how many output items we produced.
-      return noutput_items;
+      return (i + d_tag_offset);
     }
 
   } /* namespace misc */
